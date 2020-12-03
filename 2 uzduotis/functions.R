@@ -22,15 +22,33 @@ u_exact_d_t <- function(x, t){
   (x-1)*x*cos(pi*t^2) - 2*pi*(x-1)*x*t*(t+1i)*sin(pi*t^2)
 }
 
+# U zero
 u_exact_0 <- function(x){
   x*(x-1)*(1i)
 }
 
+# f(x, t)
 f_x_t <- function(x, t, a, beta){
   u_exact_d_t(x, t) -
     (a^2 + 1i) * u_exact_d_d_x(x, t) -
     beta * u_exact_d_x(x, t) * (((abs(u_exact(x, t)))^2) * u_exact(x, t))
 }
+
+# F_j(...)
+F_j <- function(u_now0, u_now1, u_now2,
+                u_next0, u_next1, u_next2,
+                f_now, f_next,
+                h, tau, a, beta){
+  
+  p1 <- (2 * (h^2) * 1i) / tau
+  p2 <- 1i * (a^2) * ((u_next2 - 2 * u_next1 + u_next0) + (u_now2 - 2 * u_now1 + u_now0))
+  p3 <- - u_now2 + 2 * u_now1 - u_now0
+  p4 <- (h * 1i * beta) * (1/2) * ((((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0) + (((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
+  p5 <- (h^2) * 1i * (f_next + f_now)
+  out <- p1 + p2 + p3 + p4 + p5
+  return(out)
+}
+
 
 
 # ------------------------------------------------
