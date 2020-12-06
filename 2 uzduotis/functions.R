@@ -1,5 +1,5 @@
 u_exact <- function(x, t){
-  x*(x-1)*(1i+t)*cos(pi*t^2)
+  x * (x - 1) * (1i + t) * cos(pi * (t^2))
 }
 
 # u_exact_d_x <- Deriv::Deriv(u_exact, "x")
@@ -24,28 +24,36 @@ u_exact_d_t <- function(x, t){
 
 # U zero
 u_exact_0 <- function(x){
-  x*(x-1)*(1i)
+  x * (x - 1) * 1i
 }
 
 # f(x, t)
 f_x_t <- function(x, t, a, beta){
-  u_exact_d_t(x, t) -
-    (a^2 + 1i) * u_exact_d_d_x(x, t) -
-    beta * u_exact_d_x(x, t) * (((abs(u_exact(x, t)))^2) * u_exact(x, t))
+  p1 <- (u_exact_d_t(x, t))
+  p2 <- ((a^2 + 1i) * u_exact_d_d_x(x, t))
+  p3 <- (beta * u_exact_d_x(x, t) * (((abs(u_exact(x, t)))^2) * u_exact(x, t)))
+  
+  out <- p1 - p2 - p3
+  return(out)
 }
+
+# C
+C <- function(h, tau){
+  2 - ((1i * (2 * h^2)) / tau)
+  }
 
 # F_j(...)
 F_j <- function(u_now0, u_now1, u_now2,
                 u_next0, u_next1, u_next2,
                 f_now, f_next,
                 h, tau, a, beta){
+  p1 <- (u_now2 - 2 * u_now1 + u_now0 - ((1i * 2 * (h^2)) / tau) * u_now1)
+  p2 <- (1i * a^2 * ((u_next2 - 2 * u_next1 + u_next0) + (u_now2 - 2 * u_now1 + u_now0)))
+  p3 <- (1i * h * beta * (1/2) * (((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0 + 
+                               ((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
+  p4 <- (1i * (h^2) * (f_next + f_now))
   
-  p1 <- (2 * (h^2) * 1i) / tau
-  p2 <- 1i * (a^2) * ((u_next2 - 2 * u_next1 + u_next0) + (u_now2 - 2 * u_now1 + u_now0))
-  p3 <- - u_now2 + 2 * u_now1 - u_now0
-  p4 <- (h * 1i * beta) * (1/2) * ((((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0) + (((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
-  p5 <- (h^2) * 1i * (f_next + f_now)
-  out <- p1 + p2 + p3 + p4 + p5
+  out <- p1 - p2 - p3 - p4
   return(out)
 }
 
