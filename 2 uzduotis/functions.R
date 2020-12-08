@@ -39,7 +39,7 @@ f_x_t <- function(x, t, a, beta){
 
 # C
 C <- function(h, tau){
-  2 - ((1i * (2 * h^2)) / tau)
+  2 + ((2 * h^2) / ((a^2 + 1i) * tau))
   }
 
 # F_j(...)
@@ -47,16 +47,52 @@ F_j <- function(u_now0, u_now1, u_now2,
                 u_next0, u_next1, u_next2,
                 f_now, f_next,
                 h, tau, a, beta){
-  p1 <- (u_now2 - 2 * u_now1 + u_now0 - ((1i * 2 * (h^2)) / tau) * u_now1)
-  p2 <- (1i * a^2 * ((u_next2 - 2 * u_next1 + u_next0) + (u_now2 - 2 * u_now1 + u_now0)))
-  p3 <- (1i * h * beta * (1/2) * (((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0 + 
-                               ((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
-  p4 <- (1i * (h^2) * (f_next + f_now))
   
-  out <- p1 - p2 - p3 - p4
+  p1 <- (u_now2 - 2 * u_now1 + u_now0 + (((2 * (h^2)) / ((a^2 + 1i) * tau)) * u_now1))
+  p2 <- (((h * beta) / (a^2 + 1i)) * (1/2) * (((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0 + 
+                                            ((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
+  p3 <- (((h^2) / (a^2 + 1i)) * (f_next + f_now))
+  
+  out <- p1 + p2 + p3
   return(out)
 }
 
+# F_j vector for the moment t
+F_j_val <- function(j, h, t, tau, a, beta){
+  u_now0 <- u_exact(j - h, t)
+  u_now1 <- u_exact(j, t)
+  u_now2 <- u_exact(j + h, t)
+  u_next0 <- u_exact(j - h, t + tau)
+  u_next1 <- u_exact(j, t + tau)
+  u_next2 <- u_exact(j + h, t + tau)
+  f_now <- f_x_t(j, t, a, beta)
+  f_next <- f_x_t(j, t + tau, a, beta)
+  
+  out <- F_j(u_now0, u_now1, u_now2,
+             u_next0, u_next1, u_next2,
+             f_now, f_next,
+             h, tau, a, beta)
+  return(out)
+}
+
+F_j_val2 <- function(u_now_val, u_next_val, f_now, f_next,
+                     h, tau, a, beta){
+  ll <- length(u_now_val)
+
+  u_now0 <- head(u_now_val, ll-2)
+  u_now1 <- u_now_val[-c(1, ll)]
+  u_now2 <- tail(u_now_val, ll-2)
+  
+  u_next0 <- head(u_next_val, ll-2)
+  u_next1 <- u_next_val[-c(1, ll)]
+  u_next2 <- tail(u_next_val, ll-2)
+
+  out <- F_j(u_now0, u_now1, u_now2,
+             u_next0, u_next1, u_next2,
+             f_now, f_next,
+             h, tau, a, beta)
+  return(out)
+}
 
 
 # ------------------------------------------------

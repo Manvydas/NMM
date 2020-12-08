@@ -11,7 +11,7 @@ a_t1 <- 7 # a
 beta_t1 <- 7 # beta
 h_t1 <- 0.1 # h
 tau_t1 <- 0.1 # tau
-step_t1 <- 10 # times to lower h and tau
+step_t1 <- 3 # times to lower h and tau
 
 back_err_t1 <- c() # empty string
 

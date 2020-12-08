@@ -8,11 +8,11 @@ if (save.txt) {
 # _t2 --> Test 2
 x_t2 <- 0.79
 t_t2 <- 1.58
-a_t2 <- 7 # a
+a_t2 <- 17 # a
 beta_t2 <- 7 # beta
 h_t2 <- 0.1 # h
 tau_t2 <- 0.1 # tau
-step_t2 <- 10 # times to lower h and tau
+step_t2 <- 3 # times to lower h and tau
 
 back_err_t2 <- c() # empty string
 

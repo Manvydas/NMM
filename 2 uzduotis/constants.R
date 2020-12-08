@@ -1,5 +1,7 @@
 a <- 45 # konstanta
 beta <- 45 # konstanta, naudojama
+a_12 <- c(0, 0)
+b_12 <- c(0, 0)
 
 N <- 100 # erdves rezoliucija
 h <- (1/N) # zingsnis erdveje
