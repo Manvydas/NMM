@@ -28,7 +28,7 @@ for (i in 1:10) {
   u_next2 <- u_exact(x_t2 + h_t2, t_t2 + tau_t2)
   f_now <- f_x_t(x_t2, t_t2, a_t2, beta_t2)
   f_next <- f_x_t(x_t2, t_t2 + tau_t2, a_t2, beta_t2)
-  C_t2 <- C(h_t2, tau_t2)
+  C_t2 <- C(h_t2, a_t2, tau_t2)
   
   F_t2 <- F_j(u_now0, u_now1, u_now2,
                u_next0, u_next1, u_next2,

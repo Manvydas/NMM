@@ -11,6 +11,8 @@ tau <- 0.01 # zingsnis laike
 T_max <- 2 #3 sek pvz
 t <- seq(from = 0, to = T_max, by = tau)
 
+delta <- 10^(-8)
+
 # 
 # # N <- 100 # rezoliucija
 # # h <- (1/N) # zingsnis erdveje
