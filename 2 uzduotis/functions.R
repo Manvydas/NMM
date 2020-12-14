@@ -2,11 +2,24 @@ u_exact <- function(x, t){
   x * (x - 1) * (1i + t) * cos(pi * (t^2))
 }
 
+# u_exact2 <- function(x, t){
+#   (abs(x * (x - 1) * (1i + t) * cos(pi * (t^2)))^2) *
+#     (x * (x - 1) * (1i + t) * cos(pi * (t^2)))
+# }
+# 
+# u_mod_sq <- function(x, t){
+#   (abs(u_exact(x, t))^2) * u_exact(x, t)
+# }
+
+
 # u_exact_d_x <- Deriv::Deriv(u_exact, "x")
 # round((0+1i + t) * (2 * x - 1) * cos(pi * t^2),14)==round((2*x*t*cos(pi*t^2) - t*cos(pi*t^2)) + 1i*(-cos(pi*t^2) + 2*x*cos(pi*t^2)),14)
 # 15 skaicius po kablelio nesutampa
+# u_exact_d_x <- function(x, t){
+#   (2*x*t*cos(pi*t^2) - t*cos(pi*t^2)) + 1i*(-cos(pi*t^2) + 2*x*cos(pi*t^2))
+# }
 u_exact_d_x <- function(x, t){
-  (2*x*t*cos(pi*t^2) - t*cos(pi*t^2)) + 1i*(-cos(pi*t^2) + 2*x*cos(pi*t^2))
+  3 * (t + 1)^3 * (cos(pi * (t^2)))^3 * (x - 1)^2 * x^2 * (2 * x - 1)
 }
 
 # u_exact_d_d_x <- Deriv::Deriv(Deriv::Deriv(u_exact, "x"),"x")
@@ -31,7 +44,7 @@ u_exact_0 <- function(x){
 f_x_t <- function(x, t, a, beta){
   p1 <- (u_exact_d_t(x, t))
   p2 <- ((a^2 + 1i) * u_exact_d_d_x(x, t))
-  p3 <- (beta * u_exact_d_x(x, t) * (((abs(u_exact(x, t)))^2) * u_exact(x, t)))
+  p3 <- (beta * u_exact_d_x(x, t)) # * (((abs(u_exact(x, t)))^2) * u_exact(x, t)))
   
   out <- p1 - p2 - p3
   return(out)
