@@ -53,7 +53,7 @@ f_x_t <- function(x, t, a, beta){
 # C
 C <- function(h, a, tau){
   2 + ((2 * h^2) / ((a^2 + 1i) * tau))
-  }
+}
 
 # F_j(...)
 F_j <- function(u_now0, u_now1, u_now2,
@@ -63,7 +63,7 @@ F_j <- function(u_now0, u_now1, u_now2,
   
   p1 <- (u_now2 - 2 * u_now1 + u_now0 + (((2 * (h^2)) / ((a^2 + 1i) * tau)) * u_now1))
   p2 <- (((h * beta) / (a^2 + 1i)) * (1/2) * (((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0 + 
-                                            ((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
+                                                ((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0))
   p3 <- (((h^2) / (a^2 + 1i)) * (f_next + f_now))
   
   out <- p1 + p2 + p3
@@ -93,6 +93,34 @@ f_test <- function(j){
   d[length(d)] <- 0i
   return(d)
 }
+
+# Thomas algorithm
+Thomas <- function(N, b_12, F_j, a_v, a_12){
+  ### --- Thomas
+  # 1. alpha_1 and beta_1
+  # a_v <- rep(0, (N))
+  b_v <- rep(0, (N))
+  # a_v[1] <- a_12[1]
+  b_v[1] <- b_12[1]
+  
+  # 2. calculate alpha, beta vectors
+  for (i in 1:(N-1)){
+    # a_v[i+1] <- 1 / (C_t3 - a_v[i])
+    b_v[i+1] <- (b_v[i] + F_j[i]) * a_v[i+1]
+  }
+  
+  # 3. y_N value
+  y <- rep(0i, N+1)
+  y[N+1] = (a_12[2] * b_v[N] + b_12[2]) / (1 - a_12[2] * a_v[N])
+  
+  # 4. calculate y_n vector
+  for (i in (N):1){
+    y[i] <- a_v[i] * y[i+1] + b_v[i] # alpha, beta vektoriu ilgis trumpesnis, del to naudojama ju ***[i] reiksmes, o ne ***[i+1]
+  }
+  
+  return(y)
+}
+
 
 # ------------------------------------------------
 U_dest <- function(x,t){ (1+1i*t)*(sin(pi*x))^2}
