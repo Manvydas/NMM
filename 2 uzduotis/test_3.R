@@ -1,9 +1,12 @@
 if (save.txt) {
   nm <- file("log_test_3.txt")
   sink(nm)
+  cat(" --- TEST 3 ---", sep = "\n")
 }
 
-
+# --- (T3) -----
+# _t3 --> Test 3
+#|-- prepare values -----
 j_t3 <- j
 t_t3 <- 1.58
 a_t3 <- a
@@ -14,124 +17,89 @@ N_t3 <- N
 h_t3 <- 1/N_t3
 C_t3 <- C(h_t3, a_t3, tau_t3)
 
+# Dirichlet boundary conditions (krastines salygos) (I)
 a_12_t3 <- a_12
 b_12_t3 <- b_12
 
+##|-- T3 u_exact ---------------------------------------------------------------
+# u_exact vector for fixed t
 u_now_t3 <- u_exact(j_t3, t_t3)
 
+# starting values for while cycle
 u_next_old_t3 <- u_now_t3
-u_next_new_t3 <- c()
+u_next_new_t3 <- NULL
+
+# f(x, t) vectors for fixed t
 f_now_t3 <- f_x_t(j_t3, t_t3, a_t3, beta_t3)
 f_next_t3 <- f_x_t(j_t3, t_t3 + tau_t3, a_t3, beta_t3)
 
 # in order to save some resources alpha calculated before while cycle
-### --- Thomas
-# 1. alpha_1 and beta_1
+# 1. alpha_1
 a_v_t3 <- rep(0, (N_t3))
-# b_v_t3 <- rep(0, (N_t3))
 a_v_t3[1] <- a_12_t3[1]
-# b_v_t3[1] <- b_12_t3[1]
 
-# 2. calculate alpha, beta vectors
+# 2. calculate alpha vector
 for (i in 1:(N_t3-1)){
   a_v_t3[i+1] <- 1 / (C_t3 - a_v_t3[i])
-  # b_v_t3[i+1] <- (b_v_t3[i] + F_j_t3[i]) * a_v_t3[i+1]
 }
 
+# Starting T3 while cycle
 stop_t3 <- FALSE
-
 while(!stop_t3){
   F_j_t3 <- F_j_val(u_now_t3, u_next_old_t3, f_now_t3, f_next_t3, h_t3, tau_t3, a_t3, beta_t3)
   
-  ### --- Thomas
-  # 1. alpha_1 and beta_1
-  # a_v_t3 <- rep(0, (N_t3))
-  b_v_t3 <- rep(0, (N_t3))
-  # a_v_t3[1] <- a_12_t3[1]
-  b_v_t3[1] <- b_12_t3[1]
-  
-  # 2. calculate alpha, beta vectors
-  for (i in 1:(N_t3-1)){
-    # a_v_t3[i+1] <- 1 / (C_t3 - a_v_t3[i])
-    b_v_t3[i+1] <- (b_v_t3[i] + F_j_t3[i]) * a_v_t3[i+1]
-  }
-  
-  # 3. y_N value
-  y <- rep(0i, N_t3+1)
-  y[N_t3+1] = (a_12_t3[2] * b_v_t3[N_t3] + b_12_t3[2]) / (1 - a_12_t3[2] * a_v_t3[N_t3])
-  
-  # 4. calculate y_n vector
-  for (i in (N_t3):1){
-    y[i] <- a_v_t3[i] * y[i+1] + b_v_t3[i] # alpha, beta vektoriu ilgis trumpesnis, del to naudojama ju ***[i] reiksmes, o ne ***[i+1]
-  }
-  
+  # Thomas algorithm
+  y <- Thomas(N_t3, b_12_t3, F_j_t3, a_v_t3, a_12_t3)
   u_next_new_t3 <- y
   
-  print(max(abs(u_next_old_t3 - u_next_new_t3)) )
+  # print(max(abs(u_next_old_t3 - u_next_new_t3)) )
   
-  if (max(abs(u_next_old_t3 - u_next_new_t3)) < delta) {
+  # error check
+  if (max(abs(u_next_old_t3 - u_next_new_t3)) < delta_t3) {
     stop_t3 <- TRUE
   }
   
+  # set up the values for the next cycle
   u_next_old_t3 <- y
-  
 }
 
-###### T3
-# 1.
-y_dat <- f_test(j)
+##|-- T3 real ------------------------------------------------------------------
+# create y vector
+y_dat_t3 <- f_test(j_t3)
 
-# 2.
-F_dat <- c()
+# create F_j vector
+F_dat_t3 <- c()
 for (i in 2:(N_t3)) {
-  F_dat[i-1] <- C_t3 * y_dat[i] - y_dat[i+1] - y_dat[i-1]
+  F_dat_t3[i-1] <- C_t3 * y_dat_t3[i] - y_dat_t3[i+1] - y_dat_t3[i-1]
 }
 
-# 3.
-stop_t3 <- FALSE
+# 1. alpha_1
+a_v_t3 <- rep(0, (N_t3))
+a_v_t3[1] <- a_12_t3[1]
 
+# 2. calculate alpha vector
+for (i in 1:(N_t3-1)){
+  a_v_t3[i+1] <- 1 / (C_t3 - a_v_t3[i])
+}
+
+# Starting T3 while cycle
+stop_t3 <- FALSE
 while(!stop_t3){
-  # F_j_t3 <- F_j_val(u_now_t3, u_next_old_t3, f_now_t3, f_next_t3, h_t3, tau_t3, a_t3, beta_t3)
-  
-  ### --- Thomas
-  # 1. alpha_1 and beta_1
-  a_v_t3 <- rep(0, (N_t3))
-  b_v_t3 <- rep(0, (N_t3))
-  a_v_t3[1] <- a_12_t3[1]
-  b_v_t3[1] <- b_12_t3[1]
-  
-  # 2. calculate alpha, beta vectors
-  for (i in 1:(N_t3-1)){
-    a_v_t3[i+1] <- 1 / (C_t3 - a_v_t3[i])
-    b_v_t3[i+1] <- (b_v_t3[i] + F_dat[i]) * a_v_t3[i+1]
-  }
-  
-  # 3. y_N value
-  y <- rep(0i, N_t3+1)
-  y[N_t3+1] = (a_12_t3[2] * b_v_t3[N_t3] + b_12_t3[2]) / (1 - a_12_t3[2] * a_v_t3[N_t3])
-  
-  # 4. calculate y_n vector
-  for (i in (N_t3):1){
-    y[i] <- a_v_t3[i] * y[i+1] + b_v_t3[i] # alpha, beta vektoriu ilgis trumpesnis, del to naudojama ju ***[i] reiksmes, o ne ***[i+1]
-  }
-  
+  # Thomas algorithm
+  y <- Thomas(N_t3, b_12_t3, F_dat_t3, a_v_t3, a_12_t3)
   u_next_new_t3 <- y
   
-  print(max(abs(y_dat - u_next_new_t3)) )
+  # print error value
+  cat(paste0("\n", "T3: ", max(abs(y_dat_t3 - u_next_new_t3)), "\n"))
   
-  if (max(abs(y_dat - u_next_new_t3)) < delta) {
+  # error check
+  if (max(abs(y_dat_t3 - u_next_new_t3)) < delta_t3) {
     stop_t3 <- TRUE
   }
   
+  # set up the values for the next cycle
   u_next_old_t3 <- y
-  
 }
 
+if (save.txt) sink()
 
-
-
-
-
-
-
-sink()
