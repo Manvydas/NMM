@@ -37,7 +37,7 @@ for (i in 1:10) {
                h_t2, tau_t2, a_t2, beta_t2)
   
   #|- calculate backward error -----
-  back_err_t2[i] <- abs(u_next2 - (C_t2 * u_next1) + u_next0 - F_t2)
+  back_err_t2[i] <- abs(u_next2 - (C_t2 * u_next1) + u_next0 + F_t2)
   # print(back_err_t2)
   
   #|- print results to console -----
