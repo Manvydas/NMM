@@ -33,8 +33,8 @@ for (i in 1:10) {
   left <- (u_next1 - u_now1) / tau_t1
   
   #|- right part of alghorithm -----
-  right11 <- (u_next2 - 2 * u_next1 + u_next0) / h^2
-  right12 <- (u_now2 - 2 * u_now1 + u_now0) / h^2
+  right11 <- (u_next2 - 2 * u_next1 + u_next0) / h_t1^2
+  right12 <- (u_now2 - 2 * u_now1 + u_now0) / h_t1^2
   right1 <- (a_t1^2 + 1i) * (1/2) * (right11 + right12)
   right21 <- (((abs(u_next2))^2) * u_next2 - ((abs(u_next0))^2) * u_next0) / (2 * h_t1)
   right22 <- (((abs(u_now2))^2) * u_now2 - ((abs(u_now0))^2) * u_now0) / (2 * h_t1)
