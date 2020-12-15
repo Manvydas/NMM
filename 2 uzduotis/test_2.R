@@ -1,6 +1,8 @@
+# start log file
 if (save.txt) {
-  nm <- file("log_test_2.txt")
+  nm <- file("logs/log_test_2.txt")
   sink(nm)
+  Sys.time()
 }
 
 # --- Backward Error (T2) -----
@@ -19,7 +21,7 @@ back_err_t2 <- c() # empty string
 
 for (i in 1:10) {
   if (i==1) cat(" --- TEST 2 ---", sep = "\n")
-
+  
   #|- setting up the values -----
   u_now0 <- u_exact(x_t2 - h_t2, t_t2)
   u_now1 <- u_exact(x_t2, t_t2)
@@ -32,9 +34,9 @@ for (i in 1:10) {
   C_t2 <- C(h_t2, a_t2, tau_t2)
   
   F_t2 <- F_j(u_now0, u_now1, u_now2,
-               u_next0, u_next1, u_next2,
-               f_now, f_next,
-               h_t2, tau_t2, a_t2, beta_t2)
+              u_next0, u_next1, u_next2,
+              f_now, f_next,
+              h_t2, tau_t2, a_t2, beta_t2)
   
   #|- calculate backward error -----
   back_err_t2[i] <- abs(u_next2 - (C_t2 * u_next1) + u_next0 + F_t2)
@@ -50,4 +52,5 @@ for (i in 1:10) {
   tau_t2 <- tau_t2 / step_t2
 }
 
+# close log file
 if (save.txt) sink()

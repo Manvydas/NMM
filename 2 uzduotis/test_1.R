@@ -1,6 +1,8 @@
+# start log file
 if (save.txt) {
-nm <- file("log_test_1.txt")
-sink(nm)
+  nm <- file("logs/log_test_1.txt")
+  sink(nm)
+  Sys.time()
 }
 
 # --- Backward Error (T1) -----
@@ -55,4 +57,6 @@ for (i in 1:10) {
   tau_t1 <- tau_t1 / step_t1
 }
 
+
+# close log file
 if (save.txt) sink()

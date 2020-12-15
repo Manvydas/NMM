@@ -19,7 +19,12 @@ u_exact <- function(x, t){
 #   (2*x*t*cos(pi*t^2) - t*cos(pi*t^2)) + 1i*(-cos(pi*t^2) + 2*x*cos(pi*t^2))
 # }
 u_exact_d_x <- function(x, t){
-  3 * (t + 1)^3 * (cos(pi * (t^2)))^3 * (x - 1)^2 * x^2 * (2 * x - 1)
+  # isplesta forma
+  # 3*((t+1)^3) * ((cos(pi*(t^2)))^3) * ((x-1)^2) * (x^3) +
+  #   3*((t+1)^3) * ((cos(pi*(t^2)))^3) * ((x-1)^3) * (x^2)
+  # supaprastina
+  3 * (t + 1)^3 * ((cos(pi * (t^2)))^3) * ((x - 1)^2) * (x^2) * (2 * x - 1)
+  # abi apskaiciuotos naudojantis wolfram alpha, rezultatas toks pat
 }
 
 # u_exact_d_d_x <- Deriv::Deriv(Deriv::Deriv(u_exact, "x"),"x")
@@ -123,5 +128,5 @@ Thomas <- function(N, b_12, F_j, a_v, a_12){
 
 
 # ------------------------------------------------
-U_dest <- function(x,t){ (1+1i*t)*(sin(pi*x))^2}
-U_test <- function(x,t){(exp(1)^t - 1i * t^2 * x)*(x^2)*(1-x)*(t^2 - 1i*sqrt(1i))*sin(pi*x)}
+# U_dest <- function(x,t){ (1+1i*t)*(sin(pi*x))^2}
+# U_test <- function(x,t){(exp(1)^t - 1i * t^2 * x)*(x^2)*(1-x)*(t^2 - 1i*sqrt(1i))*sin(pi*x)}
